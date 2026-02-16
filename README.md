@@ -73,6 +73,34 @@ Run the core simulation loop with configurable parameters:
 python3 main.py
 ```
 
+## Results & Analysis
+
+InertiaLab extensively visualizes sensor fusion performance. Below are key results from our verification scenarios.
+
+### 1. Robustness Against Bias (ES-EKF vs. Others)
+The **Error-State Kalman Filter (ES-EKF)** is the only algorithm capable of estimating and removing time-varying sensor bias.
+
+![Bias Estimation](assets/bias_estimation.png)
+*Figure 1: Real-time Gyroscope Bias Estimation. The blue line (estimate) tracks the black dashed line (truth) within the 3-sigma uncertainty bounds (blue shaded region).*
+
+### 2. Performance in High-Noise Environments
+In scenarios with significant sensor noise and hard-iron magnetic distortion (`examples/run_demo.py` - Dirty Scenario), the ES-EKF outperforms simpler filters.
+
+| Filter | Roll RMSE | Pitch RMSE | Yaw RMSE |
+| :--- | :--- | :--- | :--- |
+| **Complementary** | 0.47° | 0.28° | 5.56° |
+| **Madgwick** | 0.51° | 0.25° | 3.06° |
+| **ES-EKF** | **0.14°** | **0.28°** | **0.25°** |
+
+![High Noise Scenario](assets/demo_high_noise_&_bias.png)
+*Figure 2: Response to high noise and magnetic distortion. Note the significant Yaw drift in simpler filters compared to the robust tracking of the fusion algorithms.*
+
+### 3. Magnetic Heading Correction (Mag-Off Test)
+We verify that the magnetometer is actually fixing the heading by disabling it.
+
+![Mag Drift Test](assets/mag_drift_test.png)
+*Figure 3: Without magnetometer correction (Red), the Yaw angle drifts significantly due to integrated gyro bias. With correction (Green), it stays locked to Ground Truth (Black).*
+
 ## Roadmap
 
 *   **Phase 1 (Current)**: Python Prototype & Simulation Verification.
